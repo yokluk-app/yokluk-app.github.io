@@ -3364,7 +3364,7 @@ async function eg3Ac(){
   EG3 = 'yukleniyor'; toast('Eski Goller açılıyor…');
   let m;
   try{
-    m = window.EG3D || await import('./eg3d.js?v=44');
+    m = window.EG3D || await import('./eg3d.js?v=46');
   }catch(e){ console.error(e); EG3 = null; toast('Oyun yüklenemedi, bağlantını kontrol et'); return; }
   if(m.SEVIYE_IDLER) window.__EG_IDS = new Set(m.SEVIYE_IDLER);
   EG3 = m.eskiGollerAc(document.querySelector('.app'), {
