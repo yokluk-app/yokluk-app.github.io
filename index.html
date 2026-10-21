@@ -7,6 +7,20 @@
 <meta name="apple-mobile-web-app-title" content="Yokluk">
 <meta name="theme-color" content="#F4F3EF">
 <script>try{if(localStorage.getItem("yokluk-tema")==="koyu"){document.documentElement.dataset.tema="koyu";document.querySelector('meta[name="theme-color"]').content="#000000";}}catch(e){}</script>
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<script>window.YOKLUK_SURUM=51;(function(){
+/* Otomatik güncelleme: sunucudaki sürüm daha yeniyse sayfayı kendiliğinden yeniler */
+function oyunAcik(){var s=document.getElementById('sahne');return s&&!s.hidden;}
+function kontrol(zorla){try{if(navigator.onLine===false)return;}catch(e){}
+fetch(location.pathname+'?surum='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
+var m=t.match(/YOKLUK_SURUM=(\d+)/);if(!m)return;var y=+m[1];if(!(y>window.YOKLUK_SURUM))return;
+if(!zorla&&oyunAcik())return;var k='yokluk-yenilendi-'+y;
+try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1');}catch(e){}
+location.replace(location.pathname+'?v='+y+location.hash);}).catch(function(){});}
+setTimeout(function(){kontrol(true);},1200);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')kontrol(false);});
+window.addEventListener('pageshow',function(e){if(e.persisted)kontrol(false);});
+})();</script>
 <style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
 <title>Yokluk</title>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -2449,7 +2463,7 @@ function y2Mes(k,x,y,z){ const dx=x-k.x, dy=y-k.y, dz=z-k.z; return dx*dx+dy*dy+
 function y2Kaydir(o,x,y,esik){ const dx=x-o.kx, dy=y-o.ky; if(Math.hypot(dx,dy)<(esik||24)) return null; return Math.abs(dx)>Math.abs(dy)?(dx>0?'sag':'sol'):(dy>0?'asagi':'yukari'); }
 
 /* --- 3B mini oyunlar (eg3d.js içinde, gerektiğinde yüklenir) --- */
-const Y2_EG3D_SURUM='49';
+const Y2_EG3D_SURUM='51';
 let y2ModP=null;
 function y2Mod3D(){ if(window.EG3D&&window.EG3D.kosuAc) return Promise.resolve(window.EG3D); if(!y2ModP) y2ModP=import('./eg3d.js?v='+Y2_EG3D_SURUM).catch(e=>{ y2ModP=null; throw e; }); return y2ModP; }
 function y2Kap3D(){ let k=document.getElementById('y2kap3d'); if(!k){ k=document.createElement('div'); k.id='y2kap3d'; k.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:0'; const sh=document.getElementById('sahne'), cv=document.getElementById('cv'); sh.insertBefore(k,cv); cv.style.position='relative'; cv.style.zIndex='1'; } return k; }
@@ -3086,7 +3100,8 @@ const YRay=y2Uc({fn:'kosuAc',kaydirma:true,dokunus:'yukari',key:'raylar',ad:'Ray
     c.restore(); },
   hud(c,I){ y2Yazi(c,String(I.score),W/2,46,0,'#fff','center','900 36px '+Y2S,'rgba(0,0,0,.45)');
     c.fillStyle='rgba(0,0,0,.35)'; rr(c,W-96,24,80,34,17); c.fill(); c.fillStyle='#FFC52E'; circ(c,W-78,41,9); c.fill(); c.fillStyle='#FFE58A'; circ(c,W-78,41,5); c.fill(); y2Yazi(c,String(I.para),W-46,42,0,'#fff','center','800 17px '+Y2S);
-    y2Yazi(c,Math.floor(I.mesafe)+' m',W/2,80,0,'rgba(255,255,255,.85)','center','700 14px '+Y2S,'rgba(0,0,0,.4)'); }
+    y2Yazi(c,Math.floor(I.mesafe)+' m',W/2,80,0,'rgba(255,255,255,.85)','center','700 14px '+Y2S,'rgba(0,0,0,.4)');
+    if(I.kademeT>0){ const t=1.6-I.kademeT, al=Math.min(1,t*5)*Math.min(1,I.kademeT*2.5); c.globalAlpha=al; y2Yazi(c,'HIZ ARTTI',W/2,H*0.3-t*12,0,'#FFE066','center','900 26px '+Y2S,'rgba(0,0,0,.5)'); c.globalAlpha=1; } }
 });
 /* Halat Drift (Sling Drift benzeri) */
 const YDrift={key:'halatdrift',ad:'Halat Drift',renk:'#1FB6A6',renk2:'#0E6F7A',hudRenk:'#fff',surekli:true,gecikme:1.0,ipucu:'Direk parlayınca basılı tut: halat takılır, araba döner. Viraj bitince bırak',
@@ -3107,9 +3122,9 @@ const YDrift={key:'halatdrift',ad:'Halat Drift',renk:'#1FB6A6',renk2:'#0E6F7A',h
     else { const r=a, sol=b; const nx=sol?Math.sin(h):-Math.sin(h), ny=sol?-Math.cos(h):Math.cos(h); const cx=this.sx+nx*r, cy=this.sy+ny*r, a0=Math.atan2(this.sy-cy,this.sx-cx), d=sol?-Math.PI/2:Math.PI/2;
       this.p.push({tip,cx,cy,r,a0,d,sol}); const a1=a0+d; this.sx=cx+Math.cos(a1)*r; this.sy=cy+Math.sin(a1)*r; this.sh=h+d; }
   },
-  uret(){ const h=this.sh, yukari=Math.abs(h+Math.PI/2)<0.1, sag=Math.abs(h)<0.1; const r=rand(85,150);
+  uret(){ const h=this.sh, yukari=Math.abs(h+Math.PI/2)<0.1, sag=Math.abs(h)<0.1; const zr=Math.min(1,this.p.length/140), r=rand(85-zr*12,150-zr*35);
     let sol; if(yukari){ sol=this.sx>300?true:this.sx<-300?false:Math.random()<0.5; } else sol=sag; // sağa gidiyorsa sola dön (yukarı), sola gidiyorsa sağa
-    this.parcaEkle('don',r,sol); const yeniYukari=Math.abs(this.sh+Math.PI/2)<0.1; this.parcaEkle('duz',yeniYukari?rand(170,360):rand(130,300)); },
+    this.parcaEkle('don',r,sol); const yeniYukari=Math.abs(this.sh+Math.PI/2)<0.1; const k=1-zr*0.3; this.parcaEkle('duz',(yeniYukari?rand(170,360):rand(130,300))*k); },
   down(){ if(this.dead||this.olu) return; this.started=true; // en yakın viraj direği
     let en=null; for(let j=this.i;j<Math.min(this.p.length,this.i+4);j++){ const q=this.p[j]; if(q.tip!=='don') continue; let a=Math.atan2(this.y-q.cy,this.x-q.cx)-q.a0; a=Math.atan2(Math.sin(a),Math.cos(a)); if(a/q.d>0.8) continue; en=q; break; } const ed=en?Math.hypot(en.cx-this.x,en.cy-this.y):1e9;
     if(!en) return; const R=ed, vx=Math.cos(this.yon), vy=Math.sin(this.yon), px=en.cx-this.x, py=en.cy-this.y, cr=vx*py-vy*px;
@@ -3444,8 +3459,8 @@ const YBasket={key:'basket',ad:'Smaç Atışı',renk:'#FF7A2F',renk2:'#C2410C',h
     c.restore(); },
   reset(){ this.R=Math.min(W,H*0.6)*0.055; this.pw=this.R*5.2; this.score=0; this.dead=false; this.started=false; this.kam=0; this.seri=0; this.par=[]; this.yazi=[]; this.yildiz=0;
     this.potalar=[{x:W*0.28,y:H*0.62,a:0}]; this.yeniPota(); this.top_={x:this.potalar[0].x,y:this.potalar[0].y-this.R*0.6,vx:0,vy:0,a:0,ucus:false,deg:false}; this.aktif=0; this.cek=null; },
-  yeniPota(){ const s=this.potalar[this.potalar.length-1], sag=s.x<W/2, x=sag?W*(0.62+Math.random()*0.18):W*(0.2+Math.random()*0.18), y=s.y-H*(0.2+Math.random()*0.12); const a=(sag?-1:1)*(Math.random()<0.3+Math.min(0.4,this.score*0.02)?0.25+Math.random()*0.25:0);
-    const hareket=this.score>6&&Math.random()<Math.min(0.5,this.score*0.03); this.potalar.push({x,y,a,x0:x,hareket,faz:Math.random()*6,yildiz:Math.random()<0.35}); },
+  yeniPota(){ const s=this.potalar[this.potalar.length-1], sag=s.x<W/2, x=sag?W*(0.62+Math.random()*0.18):W*(0.2+Math.random()*0.18), y=s.y-H*(0.2+Math.random()*0.12+Math.min(0.05,this.score*0.0015)); const a=(sag?-1:1)*(Math.random()<0.3+Math.min(0.4,this.score*0.02)?0.25+Math.random()*0.25:0);
+    const hareket=this.score>6&&Math.random()<Math.min(0.5,this.score*0.03); const ph=1+Math.min(0.9,this.score*0.025), amp=Math.min(W*0.18,W*(0.1+this.score*0.002)), x0=Math.max(this.pw/2+amp+8,Math.min(W-this.pw/2-amp-8,x)); this.potalar.push({x:hareket?x0:x,y,a,x0,hareket,ph,amp,faz:Math.random()*6,yildiz:Math.random()<0.35}); },
   down(x,y){ if(this.dead||this.top_.ucus) return; this.cek={sx:x,sy:y,x,y}; this.started=true; },
   move(x,y){ if(this.cek){ this.cek.x=x; this.cek.y=y; } },
   cekV(){ const c=this.cek; let dx=c.sx-c.x, dy=c.sy-c.y; const L=Math.hypot(dx,dy), M=H*0.22; if(L>M){ dx*=M/L; dy*=M/L; } return [dx,dy,Math.min(L,M)/M]; },
@@ -3454,7 +3469,7 @@ const YBasket={key:'basket',ad:'Smaç Atışı',renk:'#FF7A2F',renk2:'#C2410C',h
   update(dt){
     for(const p of this.par){ p.t+=dt; p.vy+=600*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; } this.par=this.par.filter(p=>p.t<0.9);
     for(const y of this.yazi) y.t+=dt; this.yazi=this.yazi.filter(y=>y.t<1.1);
-    for(const p of this.potalar) if(p.hareket){ p.faz+=dt*1.2; p.x=p.x0+Math.sin(p.faz)*W*0.12; }
+    for(const p of this.potalar) if(p.hareket){ p.faz+=dt*1.2*(p.ph||1); p.x=p.x0+Math.sin(p.faz)*(p.amp||W*0.12); }
     const T=this.top_, R=this.R, g=H*2.6;
     if(this.dead){ return; }
     if(!T.ucus){ const p=this.potalar[this.aktif]; T.x=p.x; T.y=p.y-R*0.55; if(this.cek){ const [dx,dy,k]=this.cekV(); T.y+= k*R*0.8; } }
@@ -4655,7 +4670,7 @@ async function eg3Ac(){
   EG3 = 'yukleniyor'; toast('Eski Goller açılıyor…');
   let m;
   try{
-    m = window.EG3D || await import('./eg3d.js?v=49');
+    m = window.EG3D || await import('./eg3d.js?v=51');
   }catch(e){ console.error(e); EG3 = null; toast('Oyun yüklenemedi, bağlantını kontrol et'); return; }
   if(m.SEVIYE_IDLER) window.__EG_IDS = new Set(m.SEVIYE_IDLER);
   EG3 = m.eskiGollerAc(document.querySelector('.app'), {
