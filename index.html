@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#F4F3EF">
 <script>try{if(localStorage.getItem("yokluk-tema")==="koyu"){document.documentElement.dataset.tema="koyu";document.querySelector('meta[name="theme-color"]').content="#000000";}}catch(e){}</script>
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<script>window.YOKLUK_SURUM=51;(function(){
+<script>window.YOKLUK_SURUM=52;(function(){
 /* Otomatik güncelleme: sunucudaki sürüm daha yeniyse sayfayı kendiliğinden yeniler */
 function oyunAcik(){var s=document.getElementById('sahne');return s&&!s.hidden;}
 function kontrol(zorla){try{if(navigator.onLine===false)return;}catch(e){}
@@ -2463,7 +2463,7 @@ function y2Mes(k,x,y,z){ const dx=x-k.x, dy=y-k.y, dz=z-k.z; return dx*dx+dy*dy+
 function y2Kaydir(o,x,y,esik){ const dx=x-o.kx, dy=y-o.ky; if(Math.hypot(dx,dy)<(esik||24)) return null; return Math.abs(dx)>Math.abs(dy)?(dx>0?'sag':'sol'):(dy>0?'asagi':'yukari'); }
 
 /* --- 3B mini oyunlar (eg3d.js içinde, gerektiğinde yüklenir) --- */
-const Y2_EG3D_SURUM='51';
+const Y2_EG3D_SURUM='52';
 let y2ModP=null;
 function y2Mod3D(){ if(window.EG3D&&window.EG3D.kosuAc) return Promise.resolve(window.EG3D); if(!y2ModP) y2ModP=import('./eg3d.js?v='+Y2_EG3D_SURUM).catch(e=>{ y2ModP=null; throw e; }); return y2ModP; }
 function y2Kap3D(){ let k=document.getElementById('y2kap3d'); if(!k){ k=document.createElement('div'); k.id='y2kap3d'; k.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:0'; const sh=document.getElementById('sahne'), cv=document.getElementById('cv'); sh.insertBefore(k,cv); cv.style.position='relative'; cv.style.zIndex='1'; } return k; }
@@ -4670,7 +4670,7 @@ async function eg3Ac(){
   EG3 = 'yukleniyor'; toast('Eski Goller açılıyor…');
   let m;
   try{
-    m = window.EG3D || await import('./eg3d.js?v=51');
+    m = window.EG3D || await import('./eg3d.js?v=52');
   }catch(e){ console.error(e); EG3 = null; toast('Oyun yüklenemedi, bağlantını kontrol et'); return; }
   if(m.SEVIYE_IDLER) window.__EG_IDS = new Set(m.SEVIYE_IDLER);
   EG3 = m.eskiGollerAc(document.querySelector('.app'), {
